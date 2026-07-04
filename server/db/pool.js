@@ -11,3 +11,9 @@ export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 })
+
+// Neon can close idle connections at any time. Without this handler, the
+// Pool's unhandled 'error' event would crash the whole process.
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle database client', err)
+})
